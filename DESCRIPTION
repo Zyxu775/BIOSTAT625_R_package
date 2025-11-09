@@ -1,19 +1,30 @@
 Package: biostat625rpackage
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Simple Linear Regression Implemented in R and Rcpp
 Version: 0.1.0
-Authors@R: c(
+Authors@R: 
     person(
-      "Jane", "Doe",
-      email = "jane@example.com",
+      given = "Ziyan",
+      family = "Xu",
+      email = "Zyxu775@gmail.com",
       role = c("aut", "cre")
     )
-  )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
-License: What license is it under?
+Description: This package implements a simple linear regression function (lm_625) 
+             in both base R and Rcpp. It provides coefficients, fitted values, residuals, 
+             R-squared, adjusted R-squared, and F-statistics. The package also includes 
+             testing and benchmarking to verify correctness and compare performance 
+             between the R and Rcpp implementations.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: Rcpp (>= 1.0.13-1)
+Imports: 
+    Rcpp
 LinkingTo: Rcpp
 RoxygenNote: 7.3.2
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown,
+    bench
+Config/testthat/edition: 3
+VignetteBuilder: knitr

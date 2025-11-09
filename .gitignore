@@ -7,3 +7,6 @@ src/*.so
 src/*.dll
 *.Rproj
 .gitignore
+inst/doc
+/doc/
+/Meta/

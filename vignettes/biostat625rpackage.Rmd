@@ -1,0 +1,100 @@
+---
+title: "biostat625rpackage"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{biostat625rpackage}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(biostat625rpackage)
+library(testthat)
+library(bench)
+```
+
+for the R version:
+```{r use lm_625 function}
+data(mtcars)
+x <- as.matrix(mtcars[, c("wt", "hp", "cyl")])
+y <- mtcars$mpg
+results_lm_625 <- lm_625(x, y)
+print(results_lm_625)
+```
+
+```{r testthat for lm_625 function}
+test_that("lm_625 produces correct results", {
+  data(mtcars)
+  x <- as.matrix(mtcars[, c("wt", "hp", "cyl")])
+  y <- mtcars$mpg
+
+  results_lm_625 <- lm_625(x, y)
+  lm_result <- lm(mpg ~ wt + hp + cyl, data = mtcars)
+  
+  expect_true(
+    all.equal(
+      as.numeric(results_lm_625$coefficients),
+      as.numeric(coef(lm_result)),
+      tolerance = 1e-6
+      ))
+})
+```
+
+```{r Benchmark for lm_625 function}
+bench::mark(
+  lm625 = as.numeric(lm_625(x, y)$coefficients),
+  lm = as.numeric(coef(lm(mpg ~ wt + hp + cyl, data = mtcars)))
+)
+```
+
+for the Rcpp version:
+```{r use lm_625_withcpp function}
+data(mtcars)
+x <- as.matrix(mtcars[, c("wt", "hp", "cyl")])
+y <- mtcars$mpg
+results_withcpp <- lm_625_withcpp(x, y)
+print(results_withcpp)
+```
+
+```{r testthat for lm_625_withcpp function}
+test_that("lm_625_withcpp produces correct results", {
+  data(mtcars)
+  x <- as.matrix(mtcars[, c("wt", "hp", "cyl")])
+  y <- mtcars$mpg
+  
+  results_withcpp <- lm_625_withcpp(x, y)
+  lm_result <- lm(mpg ~ wt + hp + cyl, data = mtcars)
+  
+  expect_true(
+    all.equal(
+      as.numeric(results_withcpp$coefficients),
+      as.numeric(coef(lm_result)),
+      tolerance = 1e-6
+      ))
+})
+```
+
+```{r Benchmark for lm_625_withcpp function}
+# compare with the lm function in R
+bench::mark(
+  lm625_withcpp = as.numeric(lm_625_withcpp(x, y)$coefficients),
+  lm = as.numeric(coef(lm(mpg ~ wt + hp + cyl, data = mtcars)))
+)
+
+# compare with the lm_625 function
+bench::mark(
+  lm625_withcpp = as.numeric(lm_625_withcpp(x, y)$coefficients),
+  lm625 = as.numeric(lm_625(x, y)$coefficients)
+)
+```
+
+
+```{r session-info}
+sessionInfo()
+```
+
